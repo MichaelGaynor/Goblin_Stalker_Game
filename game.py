@@ -108,6 +108,7 @@ while game_on:
       elif event.key == keys["left"]:
         keys_down["left"] = True
 
+
     elif event.type == pygame.KEYUP:
       if event.key == keys["up"]:
         keys_down["up"] = False
@@ -117,7 +118,6 @@ while game_on:
         keys_down["right"] = False
       elif event.key == keys["left"]:
         keys_down["left"] = False
-
 
   # -----Update Hero Position------
   if keys_down["up"]:
