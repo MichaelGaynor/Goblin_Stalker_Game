@@ -8,6 +8,8 @@ from math import fabs
 # get the random module
 from random import randint
 
+tick = 0
+
 # In order to use pygame with have to run the init method
 pygame.init()
 
@@ -21,14 +23,16 @@ keys = {
   "right": 275,
   "left": 276,
   "up": 273,
-  "down": 274
+  "down": 274,
+  "s": 115,
 }
 
 keys_down = {
   "right": False,
   "left": False,
   "up": False,
-  "down": False
+  "down": False,
+  "s": False
 }
 
 hero = {
@@ -42,19 +46,22 @@ hero = {
 king_ghidorah = {
   "x": 300,
   "y": 100,
-  "speed": 3
+  "speed": 1,
+  "direction": "N"
 }
 
 anguirus = {
   "x": 100,
   "y": 300,
-  "speed": 2
+  "speed": 1
 }
 
 edible_man = {
   "x": 2,
   "y": screen["height"]-100
 }
+
+directions = ["N","S","E","W","NE","NW","SE","SW"]
 
 # screen_size is a tuple here so it won't ever be changed
 screen_size = (screen["width"], screen["height"])
@@ -87,6 +94,7 @@ game_on = True
 
 while game_on:
   # we are inside the main game loo. It will run as long as game_on is True
+  tick += 1
 
   # ------EVENT!------
   for event in pygame.event.get():
@@ -107,6 +115,7 @@ while game_on:
         keys_down["right"] = True
       elif event.key == keys["left"]:
         keys_down["left"] = True
+      # print event.key
 
 
     elif event.type == pygame.KEYUP:
@@ -136,18 +145,34 @@ while game_on:
     hero["y"] = 0
   elif (hero["y"] < 0):
     hero["y"] = screen["height"]-100
-
-  # ------Inventing Time
-  # max_time = 3
-  # start_time = time.time()  # remember when we started
   
 
   # COLLISION DETECTION!!!
 # king_ghidorah and hero collisions-------
+  if (king_ghidorah["direction"] == "N"):
+    king_ghidorah["y"] -= king_ghidorah["speed"]
+  elif (king_ghidorah["direction"] == "NE"):
+    king_ghidorah["y"] -= king_ghidorah["speed"]
+    king_ghidorah["x"] += king_ghidorah["speed"]
+  elif (king_ghidorah["direction"] == "NW"):
+    king_ghidorah["y"] -= king_ghidorah["speed"]
+    king_ghidorah["x"] -= king_ghidorah["speed"]
+  elif (king_ghidorah["direction"] == "S"):
+    king_ghidorah["y"] += king_ghidorah["speed"]
+  elif (king_ghidorah["direction"] == "SE"):
+    king_ghidorah["y"] += king_ghidorah["speed"]
+    king_ghidorah["x"] += king_ghidorah["speed"]
+  elif (king_ghidorah["direction"] == "SW"):
+    king_ghidorah["y"] += king_ghidorah["speed"]
+    king_ghidorah["x"] -= king_ghidorah["speed"]
+  elif (king_ghidorah["direction"] == "W"):
+    king_ghidorah["x"] -= king_ghidorah["speed"]
+  elif (king_ghidorah["direction"] == "E"):
+    king_ghidorah["x"] += king_ghidorah["speed"]
+  
+  
   distance_between = fabs(hero["x"] - king_ghidorah["x"]) + fabs(hero["y"] - king_ghidorah["y"])
   if (distance_between < 100):
-    # Generate a random X > 0, X < screen["width"]
-    # Generate a random Y > 0, Y < screen["height"]
     rand_x = randint(0, screen["width"]-100)
     rand_y = randint(0, screen["height"]-100)
     king_ghidorah["x"] = rand_x
@@ -157,39 +182,10 @@ while game_on:
 
 
 # -------King Ghidorah Motion
-
-  elif (distance_between >=100):
-    current_location = [king_ghidorah["x"],king_ghidorah["y"]]
-    rand_co_x = randint(0, screen["width"]-100)
-    rand_co_y = randint(0, screen["height"]-100)
-    # rand_co_x = 0
-    # rand_co_y = randint(100, screen["width"]-100)
-    rand_location = [rand_co_x,rand_co_y]
-    distance_between_co = fabs(rand_co_x - king_ghidorah["x"]) + fabs(rand_co_y - king_ghidorah["y"])
-    if (distance_between_co > 20):
-      # king_ghidorah["x"] = rand_co_x
-      if (king_ghidorah["x"] < rand_co_x):
-        king_ghidorah["x"] += king_ghidorah["speed"]
-      if (king_ghidorah["x"] > rand_co_x):
-        king_ghidorah["x"] -= king_ghidorah["speed"]
-      if (king_ghidorah["y"] < rand_co_y):
-        king_ghidorah["y"] += king_ghidorah["speed"]
-      if (king_ghidorah["y"] > rand_co_y):
-        king_ghidorah["y"] -= king_ghidorah["speed"]
-    else:
-      rand_co_x = randint(0, screen["width"]-100)
-      rand_co_y = randint(0, screen["height"]-100)
-
-    # rand_dist_x = randint(1,200)
-    # rand_dist_y = randint(1,200)
-    # if (rand_dist_x < 50):
-    #   king_ghidorah["x"] -= king_ghidorah["speed"]
-    # elif (rand_dist_x > 50):
-    #   king_ghidorah["x"] += king_ghidorah["speed"]
-    # if (rand_dist_y < 50):
-    #   king_ghidorah["y"] -= king_ghidorah["speed"]
-    # elif (rand_dist_y > 50):
-    #   king_ghidorah["y"] += king_ghidorah["speed"]
+  if (tick % 60 == 0):
+    new_dir_index = randint(0,len(directions)-1)
+    king_ghidorah["direction"] = directions[new_dir_index]
+  
 
 
   if (king_ghidorah["x"] > screen["width"]-100):
@@ -210,7 +206,7 @@ while game_on:
     rand_y = randint(0, screen["height"]-100)
     hero["x"] = rand_x
     hero["y"] = rand_y
-    hero["losses"] += 1
+    hero["losses"] += 43
     hero["speed"] = 10
     lose_sound.play()
   # elif (distance_between >=100):
